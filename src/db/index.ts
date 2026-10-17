@@ -23,5 +23,12 @@ function createDb(): DB {
   return drizzlePg({ client: pool, schema });
 }
 
-export const db: DB = globalForDb.__srDb ?? (globalForDb.__srDb = createDb());
+// Connect on first use, not on import, so `next build` works without DATABASE_URL.
+export const db: DB = new Proxy({} as DB, {
+  get(_, prop) {
+    const real = (globalForDb.__srDb ??= createDb());
+    const value = Reflect.get(real, prop, real);
+    return typeof value === "function" ? value.bind(real) : value;
+  },
+});
 export { schema };
