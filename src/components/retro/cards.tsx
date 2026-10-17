@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { useRetro } from "./use-retro";
 
 export function CardShell({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("rounded-xl border bg-card px-3.5 py-3 text-base leading-snug shadow-xs sm:text-[15px]", className)} {...props} />;
+  return <div className={cn("note px-3.5 py-3 text-base leading-snug sm:text-[15px]", className)} {...props} />;
 }
 
 export function Author({ card }: { card: CardDTO }) {
@@ -163,13 +163,13 @@ export function VoteControl({ targetId, myVotes, label }: { targetId: string; my
   const left = state.me.votesLeft;
   if (!myVotes) {
     return (
-      <Button variant="outline" size="sm" className="rounded-full [@media(hover:none)]:h-10 [@media(hover:none)]:px-4" disabled={!left} onClick={() => op("vote.add", { targetId })} aria-label={`Vote for: ${label}`}>
+      <Button variant="outline" size="sm" className="rounded-full border-black/10 bg-white/70 font-bold hover:bg-white dark:border-white/10 dark:bg-black/20 dark:hover:bg-black/30 [@media(hover:none)]:h-10 [@media(hover:none)]:px-4" disabled={!left} onClick={() => op("vote.add", { targetId })} aria-label={`Vote for: ${label}`}>
         <ThumbsUp /> Vote
       </Button>
     );
   }
   return (
-    <div className="flex items-center gap-1 rounded-full bg-primary/10 p-0.5 text-primary [@media(hover:none)]:[&_button]:size-9">
+    <div className="flex items-center gap-1 rounded-full bg-white/75 p-0.5 text-primary dark:bg-black/25 [@media(hover:none)]:[&_button]:size-9">
       <Button variant="ghost" size="icon-sm" className="rounded-full hover:bg-primary/15" onClick={() => op("vote.remove", { targetId })} aria-label={`Remove a vote from: ${label}`}>
         <Minus />
       </Button>

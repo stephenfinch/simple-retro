@@ -98,15 +98,15 @@ function ColumnView({ column }: { column: Column }) {
       aria-label={column.title}
       className={cn(
         "flex w-[85vw] max-w-sm shrink-0 snap-center flex-col rounded-2xl border transition-colors sm:w-80 lg:w-auto lg:max-w-none",
-        style.soft,
-        style.border,
+        "bg-card/60",
+        style.note,
         isOver && "ring-3 ring-primary/30",
       )}
     >
       <header className="px-4 pt-4 pb-3">
         <div className="flex items-center gap-2">
           <span className={cn("size-2.5 rounded-full", style.dot)} />
-          <h2 className="font-semibold">{column.title}</h2>
+          <h2 className="marker text-[17px] font-extrabold">{column.title}</h2>
           <span className="ml-auto text-xs text-muted-foreground tabular-nums">{cards.length || ""}</span>
         </div>
         {column.prompt && <p className="mt-0.5 text-sm text-muted-foreground">{column.prompt}</p>}
@@ -159,6 +159,7 @@ const collision: CollisionDetection = (args) => {
 function GroupDnd({ children }: { children: React.ReactNode }) {
   const { state, op } = useRetro();
   const [active, setActive] = useState<CardDTO | null>(null);
+  const activeColor = active && state.retro.columns.find((c) => c.id === active.columnId)?.color;
   // Mouse and touch sensors rather than pointer events: a phone cancels pointer events as soon as it starts
   // to scroll, which ended drags early. On touch, press and hold briefly to pick a card up; a quick swipe still scrolls.
   const sensors = useSensors(useSensor(MouseSensor, { activationConstraint: { distance: 6 } }), useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 8 } }));
@@ -190,7 +191,7 @@ function GroupDnd({ children }: { children: React.ReactNode }) {
       {children}
       <DragOverlay dropAnimation={null}>
         {active && (
-          <CardShell className="max-w-xs rotate-2 cursor-grabbing shadow-lg ring-2 ring-primary/40">
+          <CardShell className={cn("max-w-xs rotate-2 cursor-grabbing shadow-lg", activeColor && COLUMN_STYLES[activeColor].note)}>
             <p className="line-clamp-4 break-words whitespace-pre-wrap">{active.text}</p>
           </CardShell>
         )}
@@ -228,7 +229,7 @@ function DraggableCard({ card, inGroup }: { card: CardDTO; inGroup?: boolean }) 
         aria-roledescription="Draggable card"
         aria-label={card.text}
         className={cn(
-          "group/d relative cursor-grab touch-manipulation rounded-xl border bg-card py-3 pr-11 pl-7 text-base leading-snug shadow-xs transition-shadow outline-none select-none [-webkit-touch-callout:none] focus-visible:ring-3 focus-visible:ring-ring/50 sm:text-[15px]",
+          "note group/d cursor-grab touch-manipulation py-3 pr-11 pl-7 text-base leading-snug transition-shadow outline-none select-none [-webkit-touch-callout:none] focus-visible:ring-3 focus-visible:ring-ring/50 sm:text-[15px]",
           inGroup && "shadow-none",
           isDragging && "opacity-30",
           isOver && "ring-3 ring-primary/50",
@@ -357,11 +358,11 @@ function VoteColumn({ column }: { column: Column }) {
   return (
     <>
       {items.map((item) => (
-        <CardShell key={item.id} className={cn("space-y-2.5 transition-colors", item.myVotes > 0 && "border-primary/40 bg-primary/[0.03]")}>
+        <CardShell key={item.id} className="space-y-2.5">
           {item.kind === "group" ? (
             <>
-              {item.named && <div className="font-semibold">{item.title}</div>}
-              <ul className={cn("space-y-1.5 border-l-2 pl-3", item.named && "text-sm text-muted-foreground")}>
+              {item.named && <div className="font-extrabold">{item.title}</div>}
+              <ul className={cn("space-y-1.5 border-l-2 border-black/15 pl-3 dark:border-white/15", item.named && "text-sm text-foreground/75")}>
                 {item.cards.map((c) => (
                   <li key={c.id} className="break-words whitespace-pre-wrap">
                     {c.text}
