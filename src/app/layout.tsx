@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Nunito } from "next/font/google";
+import { ServiceWorker } from "@/components/service-worker";
 import { THEME_SCRIPT, ThemeProvider } from "@/components/theme";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,6 +12,8 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   title: { default: "Simple Retro", template: "%s · Simple Retro" },
   description: "A simple, friendly way for teams and couples to look back together and decide what to change.",
+  applicationName: "Simple Retro",
+  appleWebApp: { capable: true, title: "Simple Retro", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = {
@@ -35,6 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <TooltipProvider delayDuration={300}>
             {children}
             <Toaster position="bottom-center" richColors />
+            <ServiceWorker />
           </TooltipProvider>
         </ThemeProvider>
       </body>
